@@ -1,7 +1,6 @@
 # Programación Distribuida y Paralela
-
 Este repositorio contiene todas las actividades evaluativas del curso de Programación Distribuida y Paralela.
----
+
 ## Descripción
  
 En este espacio se encuentran organizados todos los trabajos, talleres y proyectos realizados durante el curso. 
