@@ -9,9 +9,12 @@ Cada actividad está diseñada para demostrar el entendimiento de los conceptos 
 los sistemas paralelos. 
 ## Estructura
 
-- Talleres - Proyectos - Evaluaciones - Documentación
+- Talleres 
+- Proyectos 
+- Evaluaciones 
+- Documentación
   
 ## Equipo
 
-Andres Felipe Galvis Cuervo
-Cristian Pelaez
+- Andres Felipe Galvis Cuervo
+- Cristian Pelaez
