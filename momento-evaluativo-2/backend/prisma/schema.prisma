@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Tipos de Propietario
+enum OwnerType {
+  PERSON
+  COMPANY
+}
+
+// Tipos de Vehículo
+enum VehicleType {
+  CAR
+  BIKE
+  HEAVY_CAR
+}
+
+// Tipos de Detección de Infracción
+enum DetectionType {
+  AGENT
+  CAMERA
+}
+
+// Modelo base para Propietario
+model Owner {
+  id             String       @id @default(ulid())
+  identification String       @unique
+  name           String
+  address        String
+  type           OwnerType
+  vehicles       Vehicle[]
+  infractions    Infraction[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+// Modelo de Vehículo
+model Vehicle {
+  id               String       @id @default(ulid())
+  plate            String       @unique
+  brand            String
+  registrationDate DateTime     @default(now())
+  type             VehicleType
+  owner            Owner        @relation(fields: [ownerId], references: [id])
+  ownerId          String
+  infractions      Infraction[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@index([plate])
+}
+
+// Modelo de Infracción
+model Infraction {
+  id            String        @id @default(ulid())
+  date          DateTime      @default(now())
+  detectionType DetectionType
+  vehicle       Vehicle       @relation(fields: [vehicleId], references: [id])
+  vehicleId     String
+  createdAt     DateTime      @default(now())
+  Owner         Owner?        @relation(fields: [ownerId], references: [id])
+  ownerId       String?
+}
