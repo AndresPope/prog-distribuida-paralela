@@ -26,6 +26,10 @@ export const InfractionsList = () => {
     return <div>Error: {error?.message}</div>;
   }
 
+  if (data.length === 0) {
+    return <Typography variant={"h6"}>No hay infracciones</Typography>;
+  }
+
 
   return (
     <>
@@ -36,11 +40,11 @@ export const InfractionsList = () => {
       <Divider sx={{ width: "100%" }} />
       <Table>
         <TableHead>
-          <TableRow>
-            <TableCell>Matricula</TableCell>
-            <TableCell>Tipo de Infracción</TableCell>
-            <TableCell>Fecha</TableCell>
-            <TableCell>Acciones</TableCell>
+          <TableRow sx={{ background: "#0088d1" }}>
+            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Matricula</TableCell>
+            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Tipo de Infracción</TableCell>
+            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Fecha</TableCell>
+            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Acciones</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

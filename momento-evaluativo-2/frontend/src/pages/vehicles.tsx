@@ -27,6 +27,9 @@ export const VehiclesList = () => {
     return <div>Error: {error?.message}</div>;
   }
 
+  if (data.length === 0) {
+    return <Typography variant={"h6"}>No hay Vehiculos Registrados</Typography>;
+  }
 
   return (
     <>
@@ -37,12 +40,12 @@ export const VehiclesList = () => {
       <Divider sx={{ width: "100%" }} />
       <Table>
         <TableHead>
-          <TableRow>
-            <TableCell>Marca</TableCell>
-            <TableCell>Matricula</TableCell>
-            <TableCell>Tipo de vehiculo</TableCell>
-            <TableCell>Fecha de Registro</TableCell>
-            <TableCell>Acciones</TableCell>
+          <TableRow sx={{ background: "#0088d1" }}>
+            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Marca</TableCell>
+            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Matricula</TableCell>
+            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Tipo de vehiculo</TableCell>
+            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Fecha de Registro</TableCell>
+            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Acciones</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

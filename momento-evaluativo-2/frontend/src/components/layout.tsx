@@ -22,6 +22,7 @@ export const Layout = () => {
       alignItems: "center",
       width: "100vw",
       height: "100vh",
+      backgroundColor: "#f8f9fa",
     }}>
       <Paper elevation={4} sx={{
         p: 2,

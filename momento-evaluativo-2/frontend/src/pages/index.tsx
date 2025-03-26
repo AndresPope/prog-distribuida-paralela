@@ -54,12 +54,12 @@ export const OwnersList = () => {
       <Divider sx={{ width: "100%" }} />
       <Table>
         <TableHead>
-          <TableRow>
-            <TableCell>Nombre</TableCell>
-            <TableCell>Identificacion</TableCell>
-            <TableCell>Tipo de cliente</TableCell>
-            <TableCell>Direccion</TableCell>
-            <TableCell>Acciones</TableCell>
+          <TableRow sx={{ background: "#0088d1" }}>
+            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Nombre</TableCell>
+            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Identificacion</TableCell>
+            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Tipo de cliente</TableCell>
+            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Direccion</TableCell>
+            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Acciones</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
