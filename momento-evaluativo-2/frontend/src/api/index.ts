@@ -1,5 +1,12 @@
 import axios from "axios";
-import { CreateOwnerInputs, CreateVehicleInputs, TInfraction, TOwner, TVehicle } from "../types";
+import {
+  CreateInfractionInputs,
+  CreateOwnerInputs,
+  CreateVehicleInputs,
+  TInfraction,
+  TOwner,
+  TVehicle,
+} from "../types";
 import { QueryClient } from "@tanstack/react-query";
 
 export const baseUrl = import.meta.env.VITE_API;
@@ -70,6 +77,24 @@ export const deleteVehicle = async (vehicleId: string) => {
 
 export const listInfractionsByOwner = async (ownerId: string) => {
   const res = await axios.get<TInfraction[]>(`${baseUrl}/owners/${ownerId}/infractions`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return res.data;
+};
+
+export const createInfraction = async (input: CreateInfractionInputs) => {
+  const res = await axios.post<TInfraction>(`${baseUrl}/infractions/`, input, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return res.data;
+};
+
+export const deleteInfraction = async (infractionId: string) => {
+  const res = await axios.delete(`${baseUrl}/infractions/${infractionId}`, {
     headers: {
       "Content-Type": "application/json",
     },

@@ -68,3 +68,10 @@ export type CreateVehicleInputs = {
   type: VehicleType
   ownerId: string
 }
+
+export type CreateInfractionInputs = {
+  detectionType: DetectionType
+  vehicleId: string
+  ownerId: string
+  date: string
+}
