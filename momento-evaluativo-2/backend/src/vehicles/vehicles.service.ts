@@ -18,6 +18,12 @@ export class VehiclesService {
       );
     }
 
+    if (!Object.values(VehiclesRepository).includes(createVehicleDto.type)) {
+      throw new Error(
+        `El tipo de vehiculo ${createVehicleDto.type} no es valido`,
+      );
+    }
+
     return this.vehiclesRepository.create(createVehicleDto);
   }
 

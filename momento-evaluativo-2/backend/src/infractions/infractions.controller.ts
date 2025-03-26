@@ -17,8 +17,21 @@ export class InfractionsController {
   constructor(private readonly infractionsService: InfractionsService) {}
 
   @Post()
-  create(@Body() createInfractionDto: CreateInfractionDto) {
-    return this.infractionsService.create(createInfractionDto);
+  async create(@Body() createInfractionDto: CreateInfractionDto) {
+    try {
+      return await this.infractionsService.create(createInfractionDto);
+    } catch (e) {
+      const err = e as Error;
+      throw new HttpException(
+        {
+          error: String(err?.message),
+        },
+        400,
+        {
+          cause: e,
+        },
+      );
+    }
   }
 
   @Get()
