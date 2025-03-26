@@ -23,7 +23,13 @@ export class InfractionsService {
     return `This action updates a #${id} infraction`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} infraction`;
+  async remove(id: string) {
+    const infractionExists = await this.repository.exists(id);
+
+    if (!infractionExists) {
+      throw new Error('La infracción no existe');
+    }
+
+    return this.repository.remove(id);
   }
 }

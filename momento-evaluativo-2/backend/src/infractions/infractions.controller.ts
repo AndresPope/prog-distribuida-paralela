@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpException,
+} from '@nestjs/common';
 import { InfractionsService } from './infractions.service';
 import { CreateInfractionDto } from './dto/create-infraction.dto';
 import { UpdateInfractionDto } from './dto/update-infraction.dto';
@@ -23,12 +32,28 @@ export class InfractionsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInfractionDto: UpdateInfractionDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateInfractionDto: UpdateInfractionDto,
+  ) {
     return this.infractionsService.update(+id, updateInfractionDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.infractionsService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      return await this.infractionsService.remove(id);
+    } catch (e) {
+      const err = e as Error;
+      throw new HttpException(
+        {
+          error: String(err?.message),
+        },
+        400,
+        {
+          cause: e,
+        },
+      );
+    }
   }
 }

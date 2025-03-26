@@ -1,7 +1,6 @@
 import { ClassProvider, Injectable } from '@nestjs/common';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { PrismaService } from '../prisma.service';
-import { Owner } from './entities/owner.entity';
 
 @Injectable()
 export class OwnersRepository {
@@ -18,6 +17,15 @@ export class OwnersRepository {
     });
   }
 
+  async ownerExists(ownerId: string) {
+    const owner = await this.prisma.owner.findUnique({
+      where: {
+        identification: ownerId,
+      },
+    });
+    return owner !== null;
+  }
+
   async findAll() {
     return this.prisma.owner.findMany();
     // return owners.map((owner) => Owner.fromPrisma(owner));
@@ -30,6 +38,28 @@ export class OwnersRepository {
       },
       include: {
         vehicle: true,
+      },
+    });
+  }
+
+  getAllVehicles(ownerId: string) {
+    return this.prisma.vehicle.findMany({
+      where: {
+        ownerId,
+      },
+    });
+  }
+
+  async remove(id: string) {
+    await this.prisma.vehicle.deleteMany({
+      where: {
+        ownerId: id,
+      },
+    });
+
+    return this.prisma.owner.delete({
+      where: {
+        id,
       },
     });
   }

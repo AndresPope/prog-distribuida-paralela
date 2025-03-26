@@ -20,4 +20,39 @@ export class VehiclesRepository {
   findAll() {
     return this.prisma.vehicle.findMany();
   }
+
+  async vehicleExists(vehicleId: string) {
+    const v = await this.prisma.vehicle.findUnique({
+      where: {
+        plate: vehicleId,
+      },
+    });
+    return v !== null;
+  }
+
+  async vehicleIdExists(id: string) {
+    const v = await this.prisma.vehicle.findUnique({
+      where: {
+        id,
+      },
+    });
+    return v !== null;
+  }
+
+  async hasInfractions(id: string) {
+    const infractions = await this.prisma.infraction.findMany({
+      where: {
+        vehicleId: id,
+      },
+    });
+    return infractions.length > 0;
+  }
+
+  remove(id: string) {
+    return this.prisma.vehicle.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }

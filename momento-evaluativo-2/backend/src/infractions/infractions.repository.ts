@@ -20,4 +20,22 @@ export class InfractionsRepository {
   findAll() {
     return this.prisma.infraction.findMany();
   }
+
+  async exists(id: string) {
+    const infraction = await this.prisma.infraction.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return !!infraction;
+  }
+
+  remove(id: string) {
+    return this.prisma.infraction.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }

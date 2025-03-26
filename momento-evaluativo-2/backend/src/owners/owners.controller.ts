@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  HttpException,
 } from '@nestjs/common';
 import { OwnersService } from './owners.service';
 import { CreateOwnerDto } from './dto/create-owner.dto';
@@ -17,8 +18,20 @@ export class OwnersController {
 
   @Post()
   async create(@Body() createOwnerDto: CreateOwnerDto) {
-    console.log('=>(owners.controller.ts:20) createOwnerDto', createOwnerDto);
-    return await this.ownersService.create(createOwnerDto);
+    try {
+      return await this.ownersService.create(createOwnerDto);
+    } catch (e) {
+      const err = e as Error;
+      throw new HttpException(
+        {
+          error: String(err?.message),
+        },
+        400,
+        {
+          cause: e,
+        },
+      );
+    }
   }
 
   @Get()
@@ -37,12 +50,30 @@ export class OwnersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ownersService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      return await this.ownersService.remove(id);
+    } catch (e) {
+      const err = e as Error;
+      throw new HttpException(
+        {
+          error: String(err?.message),
+        },
+        400,
+        {
+          cause: e,
+        },
+      );
+    }
   }
 
   @Get(':ownerId/infractions')
   getAllInfractions(@Param('ownerId') ownerId: string) {
     return this.ownersService.getAllInfractions({ ownerId });
+  }
+
+  @Get(':ownerId/vehicles')
+  getAllVehicles(@Param('ownerId') ownerId: string) {
+    return this.ownersService.getAllVehicles({ ownerId });
   }
 }
