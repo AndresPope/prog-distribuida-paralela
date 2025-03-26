@@ -54,3 +54,17 @@ export type TInfraction = {
   Owner: TOwner
   ownerId: string
 }
+
+export type CreateOwnerInputs = {
+  identification: string;
+  name: string;
+  address: string;
+  type: OwnerType;
+}
+
+export type CreateVehicleInputs = {
+  plate: string
+  brand: string
+  type: VehicleType
+  ownerId: string
+}

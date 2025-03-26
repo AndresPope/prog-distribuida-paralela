@@ -1,6 +1,7 @@
 import { Box, IconButton, Paper, Stack, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Outlet, useLocation, useNavigate } from "react-router";
+import { Toaster } from "react-hot-toast";
 
 
 export const Layout = () => {
@@ -30,7 +31,8 @@ export const Layout = () => {
         justifyContent: "center",
         alignItems: "center",
         m: 4,
-        width: "50vw",
+        width: "60vw",
+        maxHeight: "80vh",
       }}>
         <Stack direction="row" spacing={2} justifyItems="center">
           {!isRoot && (
@@ -41,6 +43,7 @@ export const Layout = () => {
         </Stack>
         <Outlet />
       </Paper>
+      <Toaster />
     </Box>
   );
 };

@@ -2,10 +2,9 @@ import { Route, Routes } from "react-router";
 import { Layout } from "./components/layout.tsx";
 import { OwnersList } from "./pages";
 import { InfractionsList } from "./pages/infractions.tsx";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { VehiclesList } from "./pages/vehicles.tsx";
-
-const queryClient = new QueryClient();
+import { queryClient } from "./api";
 
 function App() {
   return (
