@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { VehiclesRepository } from './vehicles.repository';
+import { VehicleType } from '@prisma/client';
 
 @Injectable()
 export class VehiclesService {
@@ -18,7 +19,7 @@ export class VehiclesService {
       );
     }
 
-    if (!Object.values(VehiclesRepository).includes(createVehicleDto.type)) {
+    if (!Object.values(VehicleType).includes(createVehicleDto.type)) {
       throw new Error(
         `El tipo de vehiculo ${createVehicleDto.type} no es valido`,
       );

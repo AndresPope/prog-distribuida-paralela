@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { CreateInfractionDto } from './dto/create-infraction.dto';
+import { Vehicle } from '../vehicles/entities/vehicle.entity';
+import { Infraction } from './entities/infraction.entity';
+import { CreateInfractionInput, UpdateInfractionInput } from './gql/inputs.gql';
+import { Owner } from '../owners/entities/owner.entity';
 
 @Injectable()
 export class InfractionsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(infraction: CreateInfractionDto) {
-    return this.prisma.infraction.create({
+  async create(infraction: CreateInfractionInput) {
+    const response = await this.prisma.infraction.create({
       data: {
         vehicleId: infraction.vehicleId,
         detectionType: infraction.detectionType,
@@ -15,10 +18,12 @@ export class InfractionsRepository {
         date: infraction.date,
       },
     });
+    return Infraction.fromPrisma(response);
   }
 
-  findAll() {
-    return this.prisma.infraction.findMany();
+  async findAll() {
+    const response = await this.prisma.infraction.findMany();
+    return response.map((res) => Infraction.fromPrisma(res));
   }
 
   async exists(id: string) {
@@ -31,11 +36,55 @@ export class InfractionsRepository {
     return !!infraction;
   }
 
-  remove(id: string) {
-    return this.prisma.infraction.delete({
+  async remove(id: string) {
+    const response = await this.prisma.infraction.delete({
       where: {
         id,
       },
     });
+    return Infraction.fromPrisma(response);
+  }
+
+  async getInfractionOwner(ownerId: string) {
+    const owner = await this.prisma.owner.findUnique({
+      where: {
+        id: ownerId,
+      },
+    });
+
+    if (!owner) {
+      throw new Error('El propietario no existe');
+    }
+
+    return Owner.fromPrisma(owner);
+  }
+
+  async getInfractionVehicle(vehicleId: string) {
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: {
+        id: vehicleId,
+      },
+    });
+
+    if (!vehicle) {
+      throw new Error('El vehículo no existe');
+    }
+
+    return Vehicle.fromPrisma(vehicle);
+  }
+
+  async update(updateInput: UpdateInfractionInput) {
+    const response = await this.prisma.infraction.update({
+      where: {
+        id: updateInput.id,
+      },
+      data: {
+        vehicleId: updateInput.vehicleId,
+        detectionType: updateInput.detectionType,
+        ownerId: updateInput.ownerId,
+        date: updateInput.date,
+      },
+    });
+    return Infraction.fromPrisma(response);
   }
 }

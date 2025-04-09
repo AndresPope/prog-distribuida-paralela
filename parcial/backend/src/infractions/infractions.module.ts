@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
 import { InfractionsService } from './infractions.service';
-import { InfractionsController } from './infractions.controller';
 import { InfractionsRepository } from './infractions.repository';
 import { PrismaService } from '../prisma.service';
+import { InfractionsResolver } from './infractions.resolvers';
 
 @Module({
-  controllers: [InfractionsController],
-  providers: [InfractionsService, InfractionsRepository, PrismaService],
+  providers: [
+    InfractionsService,
+    InfractionsRepository,
+    PrismaService,
+    InfractionsResolver,
+  ],
 })
 export class InfractionsModule {}

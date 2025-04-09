@@ -1,13 +1,16 @@
-import { ClassProvider, Injectable } from '@nestjs/common';
-import { CreateOwnerDto } from './dto/create-owner.dto';
+import { Injectable } from '@nestjs/common';
+import { CreateOwnerInput, UpdateOwnerInput } from './gql/inputs.gql';
 import { PrismaService } from '../prisma.service';
+import { Owner } from './entities/owner.entity';
+import { Infraction } from '../infractions/entities/infraction.entity';
+import { Vehicle } from '../vehicles/entities/vehicle.entity';
 
 @Injectable()
 export class OwnersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(owner: CreateOwnerDto) {
-    return this.prisma.owner.create({
+  async create(owner: CreateOwnerInput) {
+    const response = await this.prisma.owner.create({
       data: {
         identification: owner.identification,
         name: owner.name,
@@ -15,6 +18,7 @@ export class OwnersRepository {
         type: owner.type,
       },
     });
+    return Owner.fromPrisma(response);
   }
 
   async ownerExists(ownerId: string) {
@@ -27,12 +31,12 @@ export class OwnersRepository {
   }
 
   async findAll() {
-    return this.prisma.owner.findMany();
-    // return owners.map((owner) => Owner.fromPrisma(owner));
+    const owners = await this.prisma.owner.findMany();
+    return owners.map((owner) => Owner.fromPrisma(owner));
   }
 
-  getAllInfractions(ownerId: string) {
-    return this.prisma.infraction.findMany({
+  async getAllInfractions(ownerId: string) {
+    const infractions = await this.prisma.infraction.findMany({
       where: {
         ownerId,
       },
@@ -40,14 +44,17 @@ export class OwnersRepository {
         vehicle: true,
       },
     });
+    return infractions.map((inf) => Infraction.fromPrisma(inf));
   }
 
-  getAllVehicles(ownerId: string) {
-    return this.prisma.vehicle.findMany({
+  async getAllVehicles(ownerId: string) {
+    const vehicles = await this.prisma.vehicle.findMany({
       where: {
         ownerId,
       },
     });
+
+    return vehicles.map((vehicle) => Vehicle.fromPrisma(vehicle));
   }
 
   async remove(id: string) {
@@ -57,15 +64,27 @@ export class OwnersRepository {
       },
     });
 
-    return this.prisma.owner.delete({
+    const owner = await this.prisma.owner.delete({
       where: {
         id,
       },
     });
+
+    return Owner.fromPrisma(owner);
+  }
+
+  async update(updateOwner: UpdateOwnerInput) {
+    const response = await this.prisma.owner.update({
+      where: {
+        id: updateOwner.id,
+      },
+      data: {
+        identification: updateOwner.identification,
+        name: updateOwner.name,
+        address: updateOwner.address,
+        type: updateOwner.type,
+      },
+    });
+    return Owner.fromPrisma(response);
   }
 }
-
-export const OwnersRepositoryProvider: ClassProvider = {
-  provide: OwnersRepository,
-  useClass: OwnersRepository,
-};

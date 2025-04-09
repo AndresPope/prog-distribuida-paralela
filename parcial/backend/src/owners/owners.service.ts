@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOwnerDto } from './dto/create-owner.dto';
-import { UpdateOwnerDto } from './dto/update-owner.dto';
+import { CreateOwnerInput, UpdateOwnerInput } from './gql/inputs.gql';
 import { OwnersRepository } from './owners.repository';
-import { OwnerType } from '@prisma/client';
+import { OwnerType } from './gql/owner.gql';
 
 @Injectable()
 export class OwnersService {
   constructor(private readonly ownersRepository: OwnersRepository) {}
 
-  async create(createOwnerDto: CreateOwnerDto) {
+  async create(createOwnerDto: CreateOwnerInput) {
     if (!Object.values(OwnerType).includes(createOwnerDto.type)) {
       throw new Error(
         `El tipo de propietario ${createOwnerDto.type} no es valido`,
@@ -35,12 +34,24 @@ export class OwnersService {
     return this.ownersRepository.getAllInfractions(ownerId);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} owner`;
-  }
+  async update(updateOwner: UpdateOwnerInput) {
+    if (!Object.values(OwnerType).includes(updateOwner.type)) {
+      throw new Error(
+        `El tipo de propietario ${updateOwner.type} no es valido`,
+      );
+    }
 
-  update(id: number, updateOwnerDto: UpdateOwnerDto) {
-    return `This action updates a #${id} owner`;
+    const ownerAlreadyExists = await this.ownersRepository.ownerExists(
+      updateOwner.identification,
+    );
+
+    if (!ownerAlreadyExists) {
+      throw new Error(
+        `El propietario con identificacion ${updateOwner.identification} no existe`,
+      );
+    }
+
+    return this.ownersRepository.update(updateOwner);
   }
 
   async remove(id: string) {
@@ -50,6 +61,12 @@ export class OwnersService {
       throw new Error(
         `El propietario tiene multas asignadas no puede ser eliminado`,
       );
+    }
+
+    const ownerExists = await this.ownersRepository.ownerExists(id);
+
+    if (!ownerExists) {
+      throw new Error(`El propietario con id ${id} no existe`);
     }
 
     return this.ownersRepository.remove(id);

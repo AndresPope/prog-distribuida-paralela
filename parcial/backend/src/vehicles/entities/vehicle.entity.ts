@@ -1,6 +1,5 @@
-import { VehicleType, Vehicle as PrismaVehicle } from '@prisma/client';
-import { Owner } from '../../owners/entities/owner.entity';
-import { Infraction } from '../../infractions/entities/infraction.entity';
+import { Vehicle as PrismaVehicle } from '@prisma/client';
+import { VehicleType } from '../gql/vehicle.gql';
 
 export class Vehicle {
   private constructor(
@@ -10,24 +9,33 @@ export class Vehicle {
     private readonly registrationDate: Date,
     private readonly type: VehicleType,
     private readonly ownerId: string,
-    private readonly infractions: Infraction[],
     private readonly createdAt: Date,
     private readonly updatedAt: Date,
-    private readonly owner?: Owner,
   ) {}
 
   static fromPrisma(vehicle: PrismaVehicle): Vehicle {
-    console.log('=>(vehicle.entity.ts:20) vehicle', vehicle);
     return new Vehicle(
       vehicle.id,
       vehicle.plate,
       vehicle.brand,
       vehicle.registrationDate,
-      vehicle.type,
+      vehicle.type as VehicleType,
       vehicle.ownerId,
-      [],
       vehicle.createdAt,
       vehicle.updatedAt,
     );
+  }
+
+  public toJson() {
+    return {
+      id: this.id,
+      plate: this.plate,
+      brand: this.brand,
+      registrationDate: this.registrationDate,
+      type: this.type,
+      ownerId: this.ownerId,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
   }
 }

@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { CreateInfractionDto } from './dto/create-infraction.dto';
-import { UpdateInfractionDto } from './dto/update-infraction.dto';
 import { InfractionsRepository } from './infractions.repository';
-import { DetectionType } from '@prisma/client';
+import { DetectionType } from './gql/infraction.gql';
+import { CreateInfractionInput, UpdateInfractionInput } from './gql/inputs.gql';
 
 @Injectable()
 export class InfractionsService {
   constructor(private readonly repository: InfractionsRepository) {}
 
-  create(createInfractionDto: CreateInfractionDto) {
-    const infractionDate = new Date(createInfractionDto.date);
+  create(createInfractionInput: CreateInfractionInput) {
+    const infractionDate = new Date(createInfractionInput.date);
     const currentDate = new Date();
     if (infractionDate > currentDate) {
       throw new Error(
@@ -18,26 +17,42 @@ export class InfractionsService {
     }
 
     if (
-      !Object.keys(DetectionType).includes(createInfractionDto.detectionType)
+      !Object.keys(DetectionType).includes(createInfractionInput.detectionType)
     ) {
       throw new Error(
-        `El tipo de infracción ${createInfractionDto.detectionType} no es valido`,
+        `El tipo de infracción ${createInfractionInput.detectionType} no es valido`,
       );
     }
 
-    return this.repository.create(createInfractionDto);
+    return this.repository.create(createInfractionInput);
   }
 
   findAll() {
     return this.repository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} infraction`;
-  }
+  async update(updateInput: UpdateInfractionInput) {
+    const infractionDate = new Date(updateInput.date);
+    const currentDate = new Date();
+    if (infractionDate > currentDate) {
+      throw new Error(
+        'La fecha de la infracción no puede ser mayor a la actual',
+      );
+    }
 
-  update(id: number, updateInfractionDto: UpdateInfractionDto) {
-    return `This action updates a #${id} infraction`;
+    if (!Object.keys(DetectionType).includes(updateInput.detectionType)) {
+      throw new Error(
+        `El tipo de infracción ${updateInput.detectionType} no es valido`,
+      );
+    }
+
+    const infractionExists = await this.repository.exists(updateInput.id);
+
+    if (!infractionExists) {
+      throw new Error('La infracción no existe');
+    }
+
+    return this.repository.update(updateInput);
   }
 
   async remove(id: string) {
@@ -48,5 +63,13 @@ export class InfractionsService {
     }
 
     return this.repository.remove(id);
+  }
+
+  async getInfractionOwner(ownerId: string) {
+    return this.repository.getInfractionOwner(ownerId);
+  }
+
+  async getInfractionVehicle(vehicleId: string) {
+    return this.repository.getInfractionVehicle(vehicleId);
   }
 }

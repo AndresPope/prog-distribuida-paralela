@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreateVehicleDto } from './dto/create-vehicle.dto';
-import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { VehiclesRepository } from './vehicles.repository';
-import { VehicleType } from '@prisma/client';
+import { CreateVehicleInput, UpdateVehicleInput } from './gql/inputs.gql';
+import { VehicleType } from './gql/vehicle.gql';
 
 @Injectable()
 export class VehiclesService {
   constructor(private readonly vehiclesRepository: VehiclesRepository) {}
 
-  async create(createVehicleDto: CreateVehicleDto) {
+  async create(createVehicleDto: CreateVehicleInput) {
     const vehicleAlreadyExists = await this.vehiclesRepository.vehicleExists(
       createVehicleDto.plate,
     );
@@ -32,12 +31,20 @@ export class VehiclesService {
     return this.vehiclesRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} vehicle`;
-  }
+  async update(updateInput: UpdateVehicleInput) {
+    const vehicleAlreadyExists = await this.vehiclesRepository.vehicleExists(
+      updateInput.plate,
+    );
 
-  update(id: number, updateVehicleDto: UpdateVehicleDto) {
-    return `This action updates a #${id} vehicle`;
+    if (!vehicleAlreadyExists) {
+      throw new Error(`El Vehiculo con placa ${updateInput.plate} no existe`);
+    }
+
+    if (!Object.values(VehicleType).includes(updateInput.type)) {
+      throw new Error(`El tipo de vehiculo ${updateInput.type} no es valido`);
+    }
+
+    return this.vehiclesRepository.update(updateInput);
   }
 
   async remove(id: string) {
@@ -50,5 +57,13 @@ export class VehiclesService {
       throw new Error(`El vehiculo tiene infracciones asignadas`);
     }
     return this.vehiclesRepository.remove(id);
+  }
+
+  getAllVehicleInfractions(id: string) {
+    return this.vehiclesRepository.getAllVehicleInfractions(id);
+  }
+
+  async getVehicleOwner(ownerId: string) {
+    return this.vehiclesRepository.getVehicleOwner(ownerId);
   }
 }

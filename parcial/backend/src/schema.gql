@@ -1,0 +1,125 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateInfractionInput {
+  date: DateTime!
+  detectionType: String!
+  ownerId: String!
+  vehicleId: String!
+}
+
+input CreateOwnerInput {
+  address: String!
+  identification: String!
+  name: String!
+  type: OwnerType!
+}
+
+input CreateVehicleInput {
+  brand: String!
+  ownerId: String!
+  plate: String!
+  type: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum DetectionType {
+  AGENT
+  CAMERA
+}
+
+type InfractionGql {
+  createdAt: DateTime!
+  date: DateTime!
+  detectionType: DetectionType!
+  id: String!
+  owner: OwnerGql!
+  ownerId: String!
+  vehicle: VehicleGql!
+  vehicleId: String!
+}
+
+type Mutation {
+  createInfraction(CreateInfractionInput: CreateInfractionInput!): InfractionGql!
+  createOwner(OwnerInput: CreateOwnerInput!): OwnerGql!
+  createVehicle(CreateVehicleInput: CreateVehicleInput!): VehicleGql!
+  deleteOwner(id: String!): OwnerGql!
+  removeInfraction(id: String!): InfractionGql!
+  removeVehicle(id: String!): VehicleGql!
+  updateInfraction(UpdateInfractionInput: UpdateInfractionInput!): InfractionGql!
+  updateOwner(OwnerUpdateInput: UpdateOwnerInput!): OwnerGql!
+  updateVehicle(UpdateVehicleInput: UpdateVehicleInput!): VehicleGql!
+}
+
+type OwnerGql {
+  address: String!
+  createdAt: DateTime!
+  id: String!
+  identification: String!
+  infractions: [InfractionGql!]!
+  name: String!
+  type: OwnerType!
+  updatedAt: DateTime!
+  vehicles: [VehicleGql!]!
+}
+
+enum OwnerType {
+  COMPANY
+  PERSON
+}
+
+type Query {
+  listAllInfractions: [InfractionGql!]!
+  listAllOwnerInfractions(ownerId: String!): [InfractionGql!]!
+  listAllOwnerVehicles(ownerId: String!): [VehicleGql!]!
+  listAllVehicles: [VehicleGql!]!
+  listOwners: [OwnerGql!]!
+}
+
+input UpdateInfractionInput {
+  date: DateTime!
+  detectionType: String!
+  id: String!
+  ownerId: String!
+  vehicleId: String!
+}
+
+input UpdateOwnerInput {
+  address: String!
+  id: String!
+  identification: String!
+  name: String!
+  type: OwnerType!
+}
+
+input UpdateVehicleInput {
+  brand: String!
+  id: String!
+  ownerId: String!
+  plate: String!
+  type: String!
+}
+
+type VehicleGql {
+  brand: String!
+  createdAt: DateTime!
+  id: String!
+  infractions: [InfractionGql!]!
+  owner: [OwnerGql!]!
+  ownerId: String!
+  plate: String!
+  registrationDate: DateTime!
+  type: VehicleType!
+  updatedAt: DateTime!
+}
+
+enum VehicleType {
+  BIKE
+  CAR
+  HEAVY_CAR
+}

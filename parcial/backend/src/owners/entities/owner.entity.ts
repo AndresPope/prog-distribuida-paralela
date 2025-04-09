@@ -1,6 +1,5 @@
-import { Owner as PrismaOwner, OwnerType } from '@prisma/client';
-import { Infraction } from '../../infractions/entities/infraction.entity';
-import { Vehicle } from '../../vehicles/entities/vehicle.entity';
+import { Owner as PrismaOwner } from '@prisma/client';
+import { OwnerType } from '../gql/owner.gql';
 
 export class Owner {
   constructor(
@@ -11,17 +10,16 @@ export class Owner {
     private readonly type: OwnerType,
     private readonly createdAt: Date,
     private readonly updatedAt: Date,
-    private readonly vehicles?: Vehicle[],
-    private readonly infractions?: Infraction[],
   ) {}
 
   static fromPrisma(owner: PrismaOwner): Owner {
+    const type = owner.type as OwnerType;
     return new Owner(
       owner.id,
       owner.identification,
       owner.name,
       owner.address,
-      owner.type,
+      type,
       owner.createdAt,
       owner.updatedAt,
     );
