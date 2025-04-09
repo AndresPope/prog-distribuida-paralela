@@ -32,8 +32,8 @@ export class VehiclesService {
   }
 
   async update(updateInput: UpdateVehicleInput) {
-    const vehicleAlreadyExists = await this.vehiclesRepository.vehicleExists(
-      updateInput.plate,
+    const vehicleAlreadyExists = await this.vehiclesRepository.vehicleExistsId(
+      updateInput.id,
     );
 
     if (!vehicleAlreadyExists) {

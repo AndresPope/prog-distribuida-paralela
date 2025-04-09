@@ -2,7 +2,8 @@ import { Payment } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import toast from "react-hot-toast";
 import { useMutation } from "@apollo/client";
-import { DELETE_INFRACTION } from "../../gql";
+import { DELETE_INFRACTION, LIST_OWNER_INFRACTIONS } from "../../gql";
+import { ListOwnerInfractionsGql } from "../../types";
 
 export const DeleteInfraction = ({ infractionId, ownerId }: { infractionId: string, ownerId: string }) => {
   const [deleteInfraction] = useMutation<{ deleteInfraction: { id: string } }, { id: string }>(DELETE_INFRACTION, {
@@ -16,17 +17,17 @@ export const DeleteInfraction = ({ infractionId, ownerId }: { infractionId: stri
     onCompleted: async () => {
       toast.success("Infracción eliminada correctamente");
     },
-    update: (cache, { data }) => {
-      const id = data?.deleteInfraction.id;
-      const response = cache.readQuery<{ listInfractions: { id: string }[] }>({
-        query: DELETE_INFRACTION,
+    update: (cache) => {
+      const response = cache.readQuery<ListOwnerInfractionsGql>({
+        query: LIST_OWNER_INFRACTIONS,
         variables: { ownerId },
       });
-      if (!id || !response) return;
+      if ( !response) return;
       cache.writeQuery({
-        query: DELETE_INFRACTION,
+        query: LIST_OWNER_INFRACTIONS,
+        variables: { ownerId },
         data: {
-          listInfractions: response.listInfractions.filter((infraction) => infraction.id !== id),
+          listAllOwnerInfractions: response.listAllOwnerInfractions.filter((infraction) => infraction.id !== infractionId),
         },
       });
     },

@@ -22,16 +22,15 @@ export const DeleteOwner = ({ ownerId }: { ownerId: string }) => {
     onCompleted: async () => {
       toast.success("Propietario eliminado correctamente");
     },
-    update: (cache, { data }) => {
-      const id = data?.deleteOwner.id;
+    update: (cache) => {
       const response = cache.readQuery<ListOwnersGql>({
         query: LIST_OWNERS,
       });
-      if (!id || !response) return;
+      if (!response) return;
       cache.writeQuery({
         query: LIST_OWNERS,
         data: {
-          listOwners: response.listOwners.filter((owner) => owner.id !== id),
+          listOwners: response.listOwners.filter((owner) => owner.id !== ownerId),
         },
       });
     },

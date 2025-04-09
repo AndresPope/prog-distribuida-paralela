@@ -2,7 +2,8 @@ import { Delete } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import toast from "react-hot-toast";
 import { useMutation } from "@apollo/client";
-import { DELETE_VEHICLE } from "../../gql";
+import { DELETE_VEHICLE, LIST_OWNER_VEHICLES } from "../../gql";
+import { ListOwnerVehiclesGql } from "../../types";
 
 export const DeleteVehicle = ({ vehicleId, ownerId }: { vehicleId: string, ownerId: string }) => {
 
@@ -17,17 +18,18 @@ export const DeleteVehicle = ({ vehicleId, ownerId }: { vehicleId: string, owner
     onCompleted: () => {
       toast.success("Vehiculo eliminado correctamente");
     },
-    update: (cache, { data }) => {
-      const id = data?.deleteVehicle.id;
-      const response = cache.readQuery<{ listVehicles: { id: string }[] }>({
-        query: DELETE_VEHICLE,
+    update: (cache) => {
+      const response = cache.readQuery<ListOwnerVehiclesGql>({
+        query: LIST_OWNER_VEHICLES,
         variables: { ownerId },
       });
-      if (!id || !response) return;
+      if (!response) return;
+      console.log(vehicleId);
       cache.writeQuery({
-        query: DELETE_VEHICLE,
+        query: LIST_OWNER_VEHICLES,
+        variables: { ownerId },
         data: {
-          listVehicles: response.listVehicles.filter((vehicle) => vehicle.id !== id),
+          listAllOwnerVehicles: response.listAllOwnerVehicles.filter((vehicle) => vehicle.id !== vehicleId),
         },
       });
     },

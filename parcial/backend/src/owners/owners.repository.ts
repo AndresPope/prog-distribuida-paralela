@@ -30,6 +30,15 @@ export class OwnersRepository {
     return owner !== null;
   }
 
+  async ownerExistsId(ownerId: string) {
+    const owner = await this.prisma.owner.findUnique({
+      where: {
+        id: ownerId,
+      },
+    });
+    return owner !== null;
+  }
+
   async findAll() {
     const owners = await this.prisma.owner.findMany();
     return owners.map((owner) => Owner.fromPrisma(owner));

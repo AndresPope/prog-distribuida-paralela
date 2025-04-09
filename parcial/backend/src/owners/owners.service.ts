@@ -41,8 +41,8 @@ export class OwnersService {
       );
     }
 
-    const ownerAlreadyExists = await this.ownersRepository.ownerExists(
-      updateOwner.identification,
+    const ownerAlreadyExists = await this.ownersRepository.ownerExistsId(
+      updateOwner.id,
     );
 
     if (!ownerAlreadyExists) {
@@ -63,7 +63,7 @@ export class OwnersService {
       );
     }
 
-    const ownerExists = await this.ownersRepository.ownerExists(id);
+    const ownerExists = await this.ownersRepository.ownerExistsId(id);
 
     if (!ownerExists) {
       throw new Error(`El propietario con id ${id} no existe`);

@@ -35,6 +35,16 @@ export class VehiclesRepository {
     return v !== null;
   }
 
+  async vehicleExistsId(vehicleId: string) {
+    const v = await this.prisma.vehicle.findUnique({
+      where: {
+        id: vehicleId,
+      },
+    });
+    return v !== null;
+  }
+
+
   async vehicleIdExists(id: string) {
     const v = await this.prisma.vehicle.findUnique({
       where: {
