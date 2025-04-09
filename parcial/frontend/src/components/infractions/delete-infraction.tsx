@@ -2,7 +2,7 @@ import { Payment } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import toast from "react-hot-toast";
 import { useMutation } from "@apollo/client";
-import { DELETE_INFRACTION } from "../gql";
+import { DELETE_INFRACTION } from "../../gql";
 
 export const DeleteInfraction = ({ infractionId, ownerId }: { infractionId: string, ownerId: string }) => {
   const [deleteInfraction] = useMutation<{ deleteInfraction: { id: string } }, { id: string }>(DELETE_INFRACTION, {

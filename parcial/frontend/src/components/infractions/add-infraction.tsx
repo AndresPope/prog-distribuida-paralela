@@ -1,25 +1,16 @@
 import {
   Button,
   Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
 } from "@mui/material";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { CreateInfractionInputs, ListOwnerInfractionsGql, TInfraction } from "../types";
+import { CreateInfractionInputs, ListOwnerInfractionsGql, TInfraction } from "../../types";
 import toast from "react-hot-toast";
-import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import { VehiclesSelector } from "./vehicles-selector.tsx";
 import { useMutation } from "@apollo/client";
-import { CREATE_INFRACTION, LIST_OWNER_INFRACTIONS } from "../gql";
+import { CREATE_INFRACTION, LIST_OWNER_INFRACTIONS } from "../../gql";
+import { InfractionForm } from "./infraction-form.tsx";
 
 export const AddInfraction = ({ ownerId }: { ownerId: string }) => {
   const [open, setOpen] = useState(false);
@@ -67,41 +58,25 @@ export const AddInfraction = ({ ownerId }: { ownerId: string }) => {
     });
   };
 
+  const handleEditDate = (date: Dayjs | null) => {
+    setDate(date);
+  };
+
 
   return (
     <>
       <Button color={"info"} variant={"contained"} size={"small"} onClick={() => setOpen(!open)}>Asignar</Button>
       <Dialog fullWidth={true} open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Agregar Infracción</DialogTitle>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogContent>
-            <DialogContentText>Registra los campos requeridos</DialogContentText>
-            <Stack spacing={2} m={2} width={"80%"}>
-              <VehiclesSelector ownerId={ownerId} register={register} />
-              <FormControl fullWidth>
-                <InputLabel id="owner-type" sx={{ pl: 0 }}>Tipo de Detección</InputLabel>
-                <Select
-                  required={true}
-                  {...register("detectionType", { required: true })}
-                  labelId="detection-type"
-                  id="detection-type-input"
-                  label="Tipo de Detección"
-                  variant={"standard"}
-                >
-                  <MenuItem value={"CAMERA"}>Camara</MenuItem>
-                  <MenuItem value={"AGENT"}>Agente</MenuItem>
-                </Select>
-              </FormControl>
-              <DateTimePicker maxDateTime={dayjs(new Date())} sx={{ w: "100%" }} onChange={(val) => setDate(val)}
-                              label="Fecha de la infracción"
-                              defaultValue={date} />
-            </Stack>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpen(false)}>Cancelar</Button>
-            <Button type={"submit"}>Aceptar</Button>
-          </DialogActions>
-        </form>
+        <InfractionForm
+          register={register}
+          handleSubmit={handleSubmit}
+          onSubmit={onSubmit}
+          handleClose={() => setOpen(false)}
+          ownerId={ownerId}
+          date={date}
+          handleEditDate={handleEditDate}
+        />
       </Dialog>
     </>
   );

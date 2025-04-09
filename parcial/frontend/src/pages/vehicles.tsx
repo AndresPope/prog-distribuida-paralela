@@ -2,11 +2,12 @@ import { Divider, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typog
 import { LoadingScreen } from "../components/loading.tsx";
 import { getVehicleType } from "../functions";
 import { useLocation } from "react-router";
-import { AddVehicle } from "../components/add-vehicle.tsx";
-import { DeleteVehicle } from "../components/delete-vehicle.tsx";
+import { AddVehicle } from "../components/vehicles/add-vehicle.tsx";
+import { DeleteVehicle } from "../components/vehicles/delete-vehicle.tsx";
 import { useQuery } from "@apollo/client";
 import { ListOwnerVehiclesGql } from "../types";
 import { LIST_OWNER_VEHICLES } from "../gql";
+import { UpdateVehicle } from "../components/vehicles/update-vehicle.tsx";
 
 export const VehiclesList = () => {
 
@@ -64,6 +65,7 @@ export const VehiclesList = () => {
               <TableCell>{getVehicleType(vehicle.type)}</TableCell>
               <TableCell>{new Date(vehicle.registrationDate).toLocaleString()}</TableCell>
               <TableCell>
+                <UpdateVehicle ownerId={ownerId} vehicle={vehicle} />
                 <DeleteVehicle vehicleId={vehicle.id} ownerId={ownerId} />
               </TableCell>
             </TableRow>

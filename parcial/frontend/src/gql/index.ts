@@ -26,6 +26,7 @@ export const LIST_OWNER_INFRACTIONS = gql`
             detectionType
             vehicle{
                 plate
+                id
             }
         }
     }`;
@@ -73,7 +74,7 @@ export const CREATE_VEHICLE = gql`
             registrationDate
             type
         }
-    }`
+    }`;
 
 export const DELETE_OWNER = gql`
     mutation DeleteOwner($id: String!) {
@@ -81,7 +82,7 @@ export const DELETE_OWNER = gql`
             name
         }
     }
-`
+`;
 
 export const DELETE_INFRACTION = gql`
     mutation RemoveInfraction($id: String!) {
@@ -89,7 +90,7 @@ export const DELETE_INFRACTION = gql`
             id
         }
     }
-`
+`;
 
 export const DELETE_VEHICLE = gql`
     mutation RemoveVehicle($id: String!) {
@@ -97,7 +98,7 @@ export const DELETE_VEHICLE = gql`
             id
         }
     }
-`
+`;
 
 export const LIST_OWNERS_VEHICLES_SUMMARY = gql`
     query ListAllOwnerVehicles($ownerId: String!) {
@@ -105,4 +106,39 @@ export const LIST_OWNERS_VEHICLES_SUMMARY = gql`
             id
             plate
         }
-    }`
+    }`;
+
+export const UPDATE_OWNER = gql`
+    mutation UpdateOwner($input: UpdateOwnerInput!) {
+        updateOwner(OwnerUpdateInput: $input) {
+            id
+            identification
+            name
+            address
+            type
+        }
+    }
+`;
+
+export const UPDATE_INFRACTION = gql`
+    mutation UpdateInfraction($updateInput: UpdateInfractionInput!) {
+        updateInfraction(UpdateInfractionInput: $updateInput) {
+            id
+            date
+            detectionType
+            vehicle{
+                plate
+            }
+        }
+    }`;
+
+export const UPDATE_VEHICLE = gql`
+    mutation UpdateVehicle($updateInput: UpdateVehicleInput!) {
+        updateVehicle(UpdateVehicleInput: $updateInput) {
+            id
+            plate
+            brand
+            registrationDate
+            type
+        }
+    }`;

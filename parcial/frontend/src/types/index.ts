@@ -38,6 +38,7 @@ export type TInfraction = {
   detectionType: DetectionType
   vehicle: {
     plate: string
+    id: string
   }
 }
 

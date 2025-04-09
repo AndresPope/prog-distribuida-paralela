@@ -15,11 +15,12 @@ import { getOwnerType } from "../functions";
 import { useNavigate } from "react-router";
 import TimeToLeaveIcon from "@mui/icons-material/TimeToLeave";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
-import { AddOwner } from "../components/add-owner.tsx";
-import { DeleteOwner } from "../components/delete-owner.tsx";
+import { AddOwner } from "../components/owners/add-owner.tsx";
+import { DeleteOwner } from "../components/owners/delete-owner.tsx";
 import { useQuery } from "@apollo/client";
 import { ListOwnersGql } from "../types";
 import { LIST_OWNERS } from "../gql";
+import { UpdateOwner } from "../components/owners/update-owner.tsx";
 
 
 export const OwnersList = () => {
@@ -81,6 +82,7 @@ export const OwnersList = () => {
                       <RequestQuoteIcon />
                     </IconButton>
                   </Tooltip>
+                  <UpdateOwner owner={owner} />
                   <DeleteOwner ownerId={owner.id} />
                 </Stack>
               </TableCell>

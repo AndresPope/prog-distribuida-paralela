@@ -2,11 +2,12 @@ import { Divider, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typog
 import { useLocation } from "react-router";
 import { LoadingScreen } from "../components/loading.tsx";
 import { getInfractionType } from "../functions";
-import { AddInfraction } from "../components/add-infraction.tsx";
-import { DeleteInfraction } from "../components/delete-infraction.tsx";
+import { AddInfraction } from "../components/infractions/add-infraction.tsx";
+import { DeleteInfraction } from "../components/infractions/delete-infraction.tsx";
 import { useQuery } from "@apollo/client";
 import { LIST_OWNER_INFRACTIONS } from "../gql";
 import { ListOwnerInfractionsGql } from "../types";
+import { UpdateInfraction } from "../components/infractions/update-infraction.tsx";
 
 export const InfractionsList = () => {
 
@@ -63,6 +64,7 @@ export const InfractionsList = () => {
               <TableCell>{getInfractionType(infraction.detectionType)}</TableCell>
               <TableCell>{new Date(infraction.date).toLocaleString()}</TableCell>
               <TableCell>
+                <UpdateInfraction ownerId={ownerId} infraction={infraction} />
                 <DeleteInfraction ownerId={ownerId} infractionId={infraction.id} />
               </TableCell>
             </TableRow>

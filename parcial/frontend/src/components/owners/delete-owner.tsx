@@ -2,8 +2,8 @@ import { Delete } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import toast from "react-hot-toast";
 import { useMutation } from "@apollo/client";
-import { DELETE_OWNER, LIST_OWNERS } from "../gql";
-import { ListOwnersGql } from "../types";
+import { DELETE_OWNER, LIST_OWNERS } from "../../gql";
+import { ListOwnersGql } from "../../types";
 
 export const DeleteOwner = ({ ownerId }: { ownerId: string }) => {
 

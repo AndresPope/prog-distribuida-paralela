@@ -2,7 +2,7 @@ import { Delete } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import toast from "react-hot-toast";
 import { useMutation } from "@apollo/client";
-import { DELETE_VEHICLE } from "../gql";
+import { DELETE_VEHICLE } from "../../gql";
 
 export const DeleteVehicle = ({ vehicleId, ownerId }: { vehicleId: string, ownerId: string }) => {
 
