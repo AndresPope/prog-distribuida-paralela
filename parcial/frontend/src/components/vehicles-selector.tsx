@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { listVehiclesByOwner } from "../api";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { UseFormRegister } from "react-hook-form";
-import { CreateInfractionInputs } from "../types";
+import { CreateInfractionInputs, ListOwnerVehiclesSummaryGql } from "../types";
+import { useQuery } from "@apollo/client";
+import { LIST_OWNER_VEHICLES } from "../gql";
 
 
 export const VehiclesSelector = ({ ownerId, register }: {
@@ -10,12 +10,11 @@ export const VehiclesSelector = ({ ownerId, register }: {
   register: UseFormRegister<CreateInfractionInputs>
 }) => {
 
-  const { data } = useQuery({
-    queryKey: ["vehicles", ownerId],
-    queryFn: () => listVehiclesByOwner(ownerId),
+  const { data } = useQuery<ListOwnerVehiclesSummaryGql>(LIST_OWNER_VEHICLES, {
+    variables: { ownerId },
   });
 
-  const vehicles = data || [];
+  const vehicles = data?.listAllOwnerVehicles || [];
 
   return (
     <FormControl fullWidth>

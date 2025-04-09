@@ -1,28 +1,40 @@
 import { Payment } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
-import { deleteInfraction, queryClient } from "../api";
 import toast from "react-hot-toast";
-import { AxiosError } from "axios";
+import { useMutation } from "@apollo/client";
+import { DELETE_INFRACTION } from "../gql";
 
 export const DeleteInfraction = ({ infractionId, ownerId }: { infractionId: string, ownerId: string }) => {
-  const { mutate } = useMutation({
-    mutationFn: deleteInfraction,
-    onError: (error: AxiosError<{ error: string }>) => {
-      const message = error.response?.data?.error;
+  const [deleteInfraction] = useMutation<{ deleteInfraction: { id: string } }, { id: string }>(DELETE_INFRACTION, {
+    variables: {
+      id: infractionId,
+    },
+    onError: (error) => {
+      const message = error.message;
       toast.error(`Ocurrio un error al eliminar la infracción, ${message}`);
     },
-    onSuccess: async () => {
+    onCompleted: async () => {
       toast.success("Infracción eliminada correctamente");
-      await queryClient.fetchQuery({
-        queryKey: ["infractions", ownerId],
+    },
+    update: (cache, { data }) => {
+      const id = data?.deleteInfraction.id;
+      const response = cache.readQuery<{ listInfractions: { id: string }[] }>({
+        query: DELETE_INFRACTION,
+        variables: { ownerId },
+      });
+      if (!id || !response) return;
+      cache.writeQuery({
+        query: DELETE_INFRACTION,
+        data: {
+          listInfractions: response.listInfractions.filter((infraction) => infraction.id !== id),
+        },
       });
     },
   });
 
   return (
     <Tooltip title="Pagar">
-      <IconButton onClick={() => mutate(infractionId)}>
+      <IconButton onClick={() => deleteInfraction()}>
         <Payment />
       </IconButton>
     </Tooltip>

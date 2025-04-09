@@ -1,29 +1,45 @@
 import { Delete } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
-import { deleteOwner, queryClient } from "../api";
 import toast from "react-hot-toast";
-import { AxiosError } from "axios";
+import { useMutation } from "@apollo/client";
+import { DELETE_OWNER, LIST_OWNERS } from "../gql";
+import { ListOwnersGql } from "../types";
 
 export const DeleteOwner = ({ ownerId }: { ownerId: string }) => {
 
-  const { mutate } = useMutation({
-    mutationFn: deleteOwner,
-    onError: (error: AxiosError<{ error: string }>) => {
-      const message = error.response?.data?.error;
+  const [deleteOwner] = useMutation<{
+    deleteOwner: {
+      id: string
+    }
+  }>(DELETE_OWNER, {
+    variables: {
+      id: ownerId,
+    },
+    onError: (error) => {
+      const message = error.message;
       toast.error(`Ocurrio un error al eliminar el propietario, ${message}`);
     },
-    onSuccess: async () => {
+    onCompleted: async () => {
       toast.success("Propietario eliminado correctamente");
-      await queryClient.fetchQuery({
-        queryKey: ["owners"],
+    },
+    update: (cache, { data }) => {
+      const id = data?.deleteOwner.id;
+      const response = cache.readQuery<ListOwnersGql>({
+        query: LIST_OWNERS,
+      });
+      if (!id || !response) return;
+      cache.writeQuery({
+        query: LIST_OWNERS,
+        data: {
+          listOwners: response.listOwners.filter((owner) => owner.id !== id),
+        },
       });
     },
   });
 
   return (
     <Tooltip title="Eliminar">
-      <IconButton onClick={() => mutate(ownerId)}>
+      <IconButton onClick={() => deleteOwner()}>
         <Delete />
       </IconButton>
     </Tooltip>

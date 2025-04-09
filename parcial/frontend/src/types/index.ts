@@ -20,10 +20,6 @@ export type TOwner = {
   name: string
   address: string
   type: OwnerType
-  vehicles: TVehicle[]
-  infractions: TInfraction[]
-  createdAt: Date
-  updatedAt: Date
 }
 
 export type TVehicle = {
@@ -33,13 +29,6 @@ export type TVehicle = {
   //Date
   registrationDate: string
   type: VehicleType
-  owner: TOwner
-  ownerId: string
-  infractions: TInfraction[]
-  //Date
-  createdAt: string
-  //Date
-  updatedAt: string
 }
 
 export type TInfraction = {
@@ -47,12 +36,9 @@ export type TInfraction = {
   //Date
   date: string
   detectionType: DetectionType
-  vehicle: TVehicle
-  vehicleId: string
-  //Date
-  createdAt: string
-  Owner: TOwner
-  ownerId: string
+  vehicle: {
+    plate: string
+  }
 }
 
 export type CreateOwnerInputs = {
@@ -74,4 +60,25 @@ export type CreateInfractionInputs = {
   vehicleId: string
   ownerId: string
   date: string
+}
+
+export type ListOwnersGql = {
+  listOwners: TOwner[]
+}
+
+export type ListOwnerInfractionsGql = {
+  listAllOwnerInfractions: TInfraction[]
+}
+
+export type ListOwnerVehiclesGql = {
+  listAllOwnerVehicles: TVehicle[]
+}
+
+export type VehicleSummary = {
+  id: string
+  plate: string
+}
+
+export type ListOwnerVehiclesSummaryGql = {
+  listAllOwnerVehicles: VehicleSummary[]
 }

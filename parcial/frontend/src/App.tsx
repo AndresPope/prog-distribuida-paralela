@@ -2,15 +2,15 @@ import { Route, Routes } from "react-router";
 import { Layout } from "./components/layout.tsx";
 import { OwnersList } from "./pages";
 import { InfractionsList } from "./pages/infractions.tsx";
-import { QueryClientProvider } from "@tanstack/react-query";
 import { VehiclesList } from "./pages/vehicles.tsx";
-import { queryClient } from "./api";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { ApolloProvider } from "@apollo/client";
+import { apolloClient } from "./gql";
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
+    <ApolloProvider client={apolloClient}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Routes>
           <Route element={<Layout />}>
@@ -20,7 +20,7 @@ function App() {
           </Route>
         </Routes>
       </LocalizationProvider>
-    </QueryClientProvider>
+    </ApolloProvider>
   );
 }
 

@@ -10,8 +10,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
-import { listOwners } from "../api";
 import { LoadingScreen } from "../components/loading.tsx";
 import { getOwnerType } from "../functions";
 import { useNavigate } from "react-router";
@@ -19,6 +17,9 @@ import TimeToLeaveIcon from "@mui/icons-material/TimeToLeave";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 import { AddOwner } from "../components/add-owner.tsx";
 import { DeleteOwner } from "../components/delete-owner.tsx";
+import { useQuery } from "@apollo/client";
+import { ListOwnersGql } from "../types";
+import { LIST_OWNERS } from "../gql";
 
 
 export const OwnersList = () => {
@@ -32,18 +33,17 @@ export const OwnersList = () => {
     navigate("/vehicles", { state: { ownerId } });
   };
 
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["owners"],
-    queryFn: listOwners,
-  });
+  const { loading, error, data } = useQuery<ListOwnersGql>(LIST_OWNERS);
 
-  if (isLoading) {
+  if (loading) {
     return <LoadingScreen />;
   }
 
   if (error || !data) {
     return <div>Error: {error?.message}</div>;
   }
+
+  const owners = data.listOwners;
 
   return (
     <>
@@ -63,7 +63,7 @@ export const OwnersList = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((owner, index) => (
+          {owners.map((owner, index) => (
             <TableRow key={index}>
               <TableCell>{owner.name}</TableCell>
               <TableCell>{owner.identification}</TableCell>

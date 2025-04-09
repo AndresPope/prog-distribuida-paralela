@@ -13,38 +13,58 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { CreateInfractionInputs } from "../types";
-import { useMutation } from "@tanstack/react-query";
-import { createInfraction, queryClient } from "../api";
+import { CreateInfractionInputs, ListOwnerInfractionsGql, TInfraction } from "../types";
 import toast from "react-hot-toast";
-import { AxiosError } from "axios";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { VehiclesSelector } from "./vehicles-selector.tsx";
+import { useMutation } from "@apollo/client";
+import { CREATE_INFRACTION, LIST_OWNER_INFRACTIONS } from "../gql";
 
 export const AddInfraction = ({ ownerId }: { ownerId: string }) => {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Dayjs | null>(dayjs(new Date()));
 
   const { register, handleSubmit, reset } = useForm<CreateInfractionInputs>();
-  const { mutate } = useMutation({
-    mutationFn: createInfraction,
-    onError: (error: AxiosError<{ error: string }>) => {
-      const message = error.response?.data?.error;
-      toast.error(`Ocurrio un error al crear la infracción, ${message}`);
+  const [createInfraction] = useMutation<{ createInfraction: TInfraction }, {
+    createInfractionInput: CreateInfractionInputs
+  }>(CREATE_INFRACTION, {
+    onError: (error) => {
       console.log("=>(add-infraction.tsx:32) error", error);
+      const message = error.message;
+      toast.error(`Ocurrio un error al crear la infracción, ${message}`);
     },
-    onSuccess: async () => {
+    onCompleted: async () => {
       reset();
       toast.success("Infracción asignada correctamente");
-      await queryClient.fetchQuery({ queryKey: ["infractions", ownerId] });
       setOpen(false);
+    },
+    update: (cache, { data }) => {
+      const infraction = data?.createInfraction;
+      const response = cache.readQuery<ListOwnerInfractionsGql>({
+        query: LIST_OWNER_INFRACTIONS, variables: {
+          ownerId,
+        },
+      });
+      if (!response) return null;
+      cache.writeQuery({
+        query: LIST_OWNER_INFRACTIONS,
+        variables: { ownerId },
+        data: {
+          listAllOwnerInfractions: [
+            ...response.listAllOwnerInfractions,
+            infraction,
+          ],
+        },
+      });
     },
   });
   const onSubmit: SubmitHandler<CreateInfractionInputs> = (data) => {
     data.ownerId = ownerId;
     data.date = date?.toISOString() as string;
-    mutate(data);
+    createInfraction({
+      variables: { createInfractionInput: data },
+    });
   };
 
 

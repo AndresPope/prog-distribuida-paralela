@@ -14,33 +14,52 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { CreateVehicleInputs } from "../types";
-import { useMutation } from "@tanstack/react-query";
-import { createVehicle, queryClient } from "../api";
+import { CreateVehicleInputs, TVehicle } from "../types";
 import toast from "react-hot-toast";
-import { AxiosError } from "axios";
+import { useMutation } from "@apollo/client";
+import { CREATE_VEHICLE, LIST_OWNER_VEHICLES } from "../gql";
 
 export const AddVehicle = ({ ownerId }: { ownerId: string }) => {
   const [open, setOpen] = useState(false);
 
   const { register, handleSubmit, reset } = useForm<CreateVehicleInputs>();
-  const { mutate } = useMutation({
-    mutationFn: createVehicle,
-    onError: (error: AxiosError<{ error: string }>) => {
-      const message = error.response?.data?.error;
-      toast.error(`Ocurrio un error al asignar el vehiculo al propietario, ${message}`);
-      console.log("=>(add-owner.tsx:35) error", error);
-    },
-    onSuccess: async () => {
+  const [createVehicle] = useMutation<{ createVehicle: TVehicle }, {
+    createVehicleInput: CreateVehicleInputs
+  }>(CREATE_VEHICLE, {
+    onCompleted: () => {
       reset();
       toast.success("Vehiculo asignado correctamente");
-      await queryClient.fetchQuery({ queryKey: ["vehicles", ownerId] });
       setOpen(false);
     },
+    onError: (error) => {
+      console.log("=>(add-owner.tsx:35) error", error);
+      const message = error.message;
+      toast.error(`Ocurrio un error al asignar el vehiculo al propietario, ${message}`);
+    },
+    update: (cache, { data }) => {
+      const vehicle = data?.createVehicle;
+      const response = cache.readQuery<{ listAllOwnerVehicles: TVehicle[] }>({
+        query: LIST_OWNER_VEHICLES,
+        variables: { ownerId },
+      });
+      if (!response) return null;
+      cache.writeQuery({
+        query: LIST_OWNER_VEHICLES,
+        variables: { ownerId },
+        data: {
+          listAllOwnerVehicles: [
+            ...response.listAllOwnerVehicles,
+            vehicle,
+          ],
+        },
+      });
+    },
   });
-  const onSubmit: SubmitHandler<CreateVehicleInputs> = (data) => {
+  const onSubmit: SubmitHandler<CreateVehicleInputs> = async (data) => {
     data.ownerId = ownerId;
-    mutate(data);
+    createVehicle({
+      variables: { createVehicleInput: data },
+    });
   };
 
 

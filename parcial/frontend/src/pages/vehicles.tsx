@@ -1,12 +1,12 @@
 import { Divider, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
 import { LoadingScreen } from "../components/loading.tsx";
 import { getVehicleType } from "../functions";
 import { useLocation } from "react-router";
-import { listVehiclesByOwner } from "../api";
 import { AddVehicle } from "../components/add-vehicle.tsx";
 import { DeleteVehicle } from "../components/delete-vehicle.tsx";
-
+import { useQuery } from "@apollo/client";
+import { ListOwnerVehiclesGql } from "../types";
+import { LIST_OWNER_VEHICLES } from "../gql";
 
 export const VehiclesList = () => {
 
@@ -14,12 +14,13 @@ export const VehiclesList = () => {
 
   const ownerId = state?.ownerId as string;
 
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["vehicles", ownerId],
-    queryFn: () => listVehiclesByOwner(ownerId),
+  const { loading, error, data } = useQuery<ListOwnerVehiclesGql>(LIST_OWNER_VEHICLES, {
+    variables: {
+      ownerId,
+    },
   });
 
-  if (isLoading) {
+  if (loading) {
     return <LoadingScreen />;
   }
 
@@ -27,8 +28,15 @@ export const VehiclesList = () => {
     return <div>Error: {error?.message}</div>;
   }
 
-  if (data.length === 0) {
-    return <Typography variant={"h6"}>No hay Vehiculos Registrados</Typography>;
+  const vehicles = data.listAllOwnerVehicles;
+
+  if (vehicles.length === 0) {
+    return (
+      <Stack>
+        <Typography variant={"h6"}>No hay Vehiculos Registrados</Typography>
+        <AddVehicle ownerId={ownerId} />
+      </Stack>
+    );
   }
 
   return (
@@ -49,7 +57,7 @@ export const VehiclesList = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((vehicle, index) => (
+          {vehicles.map((vehicle, index) => (
             <TableRow key={index}>
               <TableCell>{vehicle.brand}</TableCell>
               <TableCell>{vehicle.plate}</TableCell>
