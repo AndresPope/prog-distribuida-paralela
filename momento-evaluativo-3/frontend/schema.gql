@@ -1,0 +1,54 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateMedicineGqlInput {
+  expirationDate: DateTime!
+  kind: String!
+  laboratory: String!
+  name: String!
+  quantity: Float!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum MedicineType {
+  GOTAS
+  JARABE
+  POLVO
+  TABLETA
+}
+
+type MedicinesGql {
+  createdAt: DateTime!
+  expirationDate: DateTime!
+  id: Float!
+  kind: MedicineType!
+  laboratory: String!
+  name: String!
+  quantity: Float!
+  registrationDate: DateTime!
+  updatedAt: DateTime!
+}
+
+type Mutation {
+  createMedicine(CreateMedicineInput: CreateMedicineGqlInput!): MedicinesGql!
+  removeMedicine(id: Float!): MedicinesGql!
+  updateMedicine(UpdateMedicineInput: UpdateMedicineInput!): MedicinesGql!
+}
+
+type Query {
+  listAllMedicines: [MedicinesGql!]!
+}
+
+input UpdateMedicineInput {
+  expirationDate: DateTime!
+  id: Float!
+  kind: String!
+  laboratory: String!
+  name: String!
+  quantity: Float!
+}
