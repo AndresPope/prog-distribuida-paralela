@@ -1,5 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { MedicinesGql } from './gql/medicines.gql';
+import { MedicinesGql, MedsStats } from './gql/medicines.gql';
 import { MedicinesService } from './medicines.service';
 import { GraphQLError } from 'graphql/error';
 import { CreateMedicineGqlInput, UpdateMedicineInput } from './gql/inputs.gql';
@@ -45,6 +45,16 @@ export class MedicinesResolvers {
     try {
       const response = await this.services.remove(id);
       return response.toJson();
+    } catch (e) {
+      const err = e as Error;
+      throw new GraphQLError(err.message);
+    }
+  }
+
+  @Query(() => MedsStats)
+  async getMedicinesStats(): Promise<MedsStats> {
+    try {
+      return await this.services.getStats();
     } catch (e) {
       const err = e as Error;
       throw new GraphQLError(err.message);

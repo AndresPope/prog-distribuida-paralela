@@ -3,6 +3,7 @@ import {
   ObjectType,
   GraphQLISODateTime,
   registerEnumType,
+  Int,
 } from '@nestjs/graphql';
 
 export enum MedicineType {
@@ -44,4 +45,16 @@ export class MedicinesGql {
 
   @Field((type) => GraphQLISODateTime)
   updatedAt: Date;
+}
+
+@ObjectType()
+export class MedsStats {
+  @Field(() => Int)
+  totalMeds: number;
+
+  @Field()
+  percentagePerType: string;
+
+  @Field(() => [MedicinesGql])
+  meds: MedicinesGql[];
 }

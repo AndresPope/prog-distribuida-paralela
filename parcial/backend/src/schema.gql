@@ -63,6 +63,7 @@ type OwnerGql {
   identification: String!
   infractions: [InfractionGql!]!
   name: String!
+  test: String!
   type: OwnerType!
   updatedAt: DateTime!
   vehicles: [VehicleGql!]!

@@ -3,15 +3,15 @@ import { MedicineType } from '../gql/medicines.gql';
 
 export class Medicine {
   private constructor(
-    private readonly id: number,
-    private readonly name: string,
-    private readonly kind: MedicineType,
-    private readonly laboratory: string,
-    private readonly quantity: number,
-    private readonly expirationDate: Date,
-    private readonly registrationDate: Date,
-    private readonly createdAt: Date,
-    private readonly updatedAt: Date,
+    public readonly id: number,
+    public readonly name: string,
+    public readonly kind: MedicineType,
+    public readonly laboratory: string,
+    public readonly quantity: number,
+    public readonly expirationDate: Date,
+    public readonly registrationDate: Date,
+    public readonly createdAt: Date,
+    public readonly updatedAt: Date,
   ) {}
 
   static fromPrisma(med: PrismaMedicine): Medicine {

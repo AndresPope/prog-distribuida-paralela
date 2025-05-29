@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MedicinesRepository } from './medicines.repository';
-import { MedicineType } from './gql/medicines.gql';
+import { MedicineType, MedsStats } from './gql/medicines.gql';
 import { CreateMedicineGqlInput, UpdateMedicineInput } from './gql/inputs.gql';
 import { Medicine } from './entities/medicine.entity';
 
@@ -44,5 +44,28 @@ export class MedicinesService {
       throw new Error(`El vehiculo con placa ${id} no existe`);
     }
     return this.medicinesRepository.remove(id);
+  }
+
+  async getStats(): Promise<MedsStats> {
+    const meds = await this.findAll();
+    const total = meds.length;
+
+    const typeCount = meds.reduce((acc, med) => {
+      acc[med.kind] = (acc[med.kind] || 0) + 1;
+      return acc;
+    }, {});
+
+    const percentages = Object.entries(typeCount)
+      .map(
+        ([kind, count]) =>
+          `${kind}: ${(((count as number) / total) * 100).toFixed(1)}%`,
+      )
+      .join(', ');
+
+    return {
+      totalMeds: total,
+      percentagePerType: percentages,
+      meds,
+    };
   }
 }

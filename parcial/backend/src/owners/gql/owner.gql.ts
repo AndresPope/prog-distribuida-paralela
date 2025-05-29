@@ -44,4 +44,7 @@ export class OwnerGql {
 
   @Field((type) => [InfractionGql])
   infractions: InfractionGql[];
+
+  @Field()
+  test: string;
 }

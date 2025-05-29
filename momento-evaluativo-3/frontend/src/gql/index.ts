@@ -57,3 +57,21 @@ export const UPDATE_MEDICINE = gql`
         }
     }
 `;
+
+export const GET_STATS = gql`
+    query GetStats {
+        getMedicinesStats {
+            totalMeds
+            percentagePerType
+            meds {
+                id
+                name
+                kind
+                laboratory
+                quantity
+                expirationDate
+                registrationDate
+            }
+        }
+    }
+`

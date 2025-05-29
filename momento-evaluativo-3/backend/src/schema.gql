@@ -34,6 +34,12 @@ type MedicinesGql {
   updatedAt: DateTime!
 }
 
+type MedsStats {
+  meds: [MedicinesGql!]!
+  percentagePerType: String!
+  totalMeds: Int!
+}
+
 type Mutation {
   createMedicine(CreateMedicineInput: CreateMedicineGqlInput!): MedicinesGql!
   removeMedicine(id: Float!): MedicinesGql!
@@ -41,6 +47,7 @@ type Mutation {
 }
 
 type Query {
+  getMedicinesStats: MedsStats!
   listAllMedicines: [MedicinesGql!]!
 }
 

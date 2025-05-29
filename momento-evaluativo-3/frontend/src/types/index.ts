@@ -27,3 +27,13 @@ export type CreateMedicineInputs = {
 export type ListMedicinesGql = {
   listAllMedicines: TMedicine[]
 }
+
+export type TMedsStats = {
+  totalMeds: number;
+  percentagePerType: string;
+  meds: TMedicine[];
+}
+
+export type GetMedsStats = {
+  getMedicinesStats: TMedsStats
+}
