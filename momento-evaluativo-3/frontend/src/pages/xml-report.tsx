@@ -9,18 +9,19 @@ import {
   Button,
   Grid,
   Chip,
-  Divider,
+  Divider, Stack, IconButton,
 } from "@mui/material";
 import {
   Download as DownloadIcon,
   Assessment as AssessmentIcon,
   Code as CodeIcon,
+  Refresh,
 } from "@mui/icons-material";
 import { StatCard, StyledCard, XMLContainer } from "../components/report-components.tsx";
 import { downloadXML, generateXML, getKindColor } from "../functions";
 
 export const XMLReport = () => {
-  const { data, loading, error } = useQuery<GetMedsStats>(GET_STATS);
+  const { data, loading, error, refetch } = useQuery<GetMedsStats>(GET_STATS);
 
   if (loading) {
     return <LoadingScreen />;
@@ -41,7 +42,10 @@ export const XMLReport = () => {
             Reporte de Medicamentos
           </Typography>
         </Box>
-        <Box display="flex" gap={1}>
+        <Stack direction={"row"} gap={1}>
+          <IconButton onClick={() => refetch()} color={"primary"} size={"large"}>
+            <Refresh />
+          </IconButton>
           <Button
             variant="contained"
             startIcon={<DownloadIcon />}
@@ -50,7 +54,7 @@ export const XMLReport = () => {
           >
             Descargar XML
           </Button>
-        </Box>
+        </Stack>
       </Box>
 
       <Grid container spacing={3} mb={4}>

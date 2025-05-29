@@ -4,13 +4,12 @@ import { Box, CircularProgress } from "@mui/material";
 export const LoadingScreen = () => {
   return (
     <Box sx={{
-      w: "100%",
-      h: "100%",
+      minHeight: "100vh",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
     }}>
-      <CircularProgress size={"50%"} />
+      <CircularProgress size={"10%"} />
     </Box>
   );
 };

@@ -10,6 +10,7 @@ import { useMutation } from "@apollo/client";
 import { CREATE_MEDICINE, LIST_MEDICINES } from "../gql";
 import { MedicineForm } from "./medicine-form.tsx";
 import { CreateMedicineInputs, ListMedicinesGql, TMedicine } from "../types";
+import { Add } from "@mui/icons-material";
 
 export const AddMedicine = () => {
   const [open, setOpen] = useState(false);
@@ -55,7 +56,24 @@ export const AddMedicine = () => {
 
   return (
     <>
-      <Button color={"info"} variant={"contained"} size={"small"} onClick={() => setOpen(!open)}>Agregar</Button>
+      <Button
+        onClick={() => setOpen(true)}
+        variant="contained"
+        startIcon={<Add />}
+        sx={{
+          borderRadius: 2,
+          textTransform: "none",
+          fontWeight: "bold",
+          background: "linear-gradient(135deg, #4caf50 0%, #66bb6a 100%)",
+          "&:hover": {
+            background: "linear-gradient(135deg, #43a047 0%, #5cb85c 100%)",
+            transform: "translateY(-1px)",
+            boxShadow: "0 4px 12px rgba(76, 175, 80, 0.3)",
+          },
+        }}
+      >
+        Nuevo Medicamento
+      </Button>
       <Dialog fullWidth={true} open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Agregar Medicamento</DialogTitle>
         <MedicineForm register={register} handleSubmit={handleSubmit} onSubmit={onSubmit}

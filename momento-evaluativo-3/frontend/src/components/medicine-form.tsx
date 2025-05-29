@@ -59,11 +59,17 @@ export const MedicineForm = ({ register, handleSubmit, defaultValues, handleClos
                      variant={"standard"}
                      type={"number"}
                      label={"Cantidad"} />
-          <TextField defaultValue={defaultValues?.expirationDate || ""} required={true}
+          <TextField defaultValue={defaultValues?.expirationDate || new Date()} required={true}
                      fullWidth={true} {...register("expirationDate", { required: true })} name={"expirationDate"}
                      variant={"standard"}
                      type={"date"}
-                     label={"Fecha de expiracion"} />
+                     label={"Fecha de expiración"}
+                     slotProps={{
+                       inputLabel: {
+                         shrink: true,
+                       },
+                     }}
+          />
         </Stack>
       </DialogContent>
       <DialogActions>
@@ -71,5 +77,6 @@ export const MedicineForm = ({ register, handleSubmit, defaultValues, handleClos
         <Button type={"submit"}>Aceptar</Button>
       </DialogActions>
     </form>
-  );
+  )
+    ;
 };

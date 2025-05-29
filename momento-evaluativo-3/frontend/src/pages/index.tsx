@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Chip,
+  IconButton,
   Paper,
   Stack,
   Table,
@@ -20,13 +21,13 @@ import { AddMedicine } from "../components/add-medicine.tsx";
 import { UpdateMedicine } from "../components/update-medicine.tsx";
 import { DeleteMedicine } from "../components/delete-medicine.tsx";
 import { useNavigate } from "react-router";
-import { Assessment } from "@mui/icons-material";
+import { Assessment, Refresh } from "@mui/icons-material";
 
 
 export const MedicinesList = () => {
 
   const navigate = useNavigate();
-  const { loading, error, data } = useQuery<ListMedicinesGql>(LIST_MEDICINES);
+  const { loading, error, data, refetch } = useQuery<ListMedicinesGql>(LIST_MEDICINES);
 
   const navigateToReport = () => {
     navigate("/xml");
@@ -83,6 +84,9 @@ export const MedicinesList = () => {
             </Typography>
 
             <Stack direction="row" spacing={1} alignItems="center">
+              <IconButton onClick={() => refetch()} color="primary" size="large">
+                <Refresh />
+              </IconButton>
               <AddMedicine />
               <Button
                 onClick={navigateToReport}
@@ -157,6 +161,16 @@ export const MedicinesList = () => {
                     fontSize: "0.9rem",
                   }}
                 >
+                  Tipo
+                </TableCell>
+                <TableCell
+                  sx={{
+                    background: "linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)",
+                    color: "#fff",
+                    fontWeight: "bold",
+                    fontSize: "0.9rem",
+                  }}
+                >
                   Cantidad
                 </TableCell>
                 <TableCell
@@ -208,6 +222,11 @@ export const MedicinesList = () => {
                   <TableCell sx={{ maxWidth: 120 }}>
                     <Typography variant="body2" noWrap title={med.laboratory}>
                       {med.laboratory}
+                    </Typography>
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 120 }}>
+                    <Typography variant="body2" noWrap title={med.kind}>
+                      {med.kind}
                     </Typography>
                   </TableCell>
                   <TableCell>
