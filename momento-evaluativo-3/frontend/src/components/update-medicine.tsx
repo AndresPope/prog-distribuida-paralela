@@ -23,7 +23,7 @@ export const UpdateMedicine = ({ medicine }: Props) => {
   const [open, setOpen] = useState(false);
 
   const { register, handleSubmit, reset } = useForm<CreateMedicineInputs>({});
-  const [updateOwner] = useMutation<{ updateOwner: TMedicine }, { input: UpdateInputs }>(UPDATE_MEDICINE, {
+  const [updateOwner] = useMutation<{ updateMedicine: TMedicine }, { input: UpdateInputs }>(UPDATE_MEDICINE, {
     onError: (error) => {
       const message = error.message;
       toast.error(`Ocurrio un error al actualizar la medicina, ${message}`);
@@ -35,14 +35,14 @@ export const UpdateMedicine = ({ medicine }: Props) => {
       reset();
     },
     update: async (cache, { data }) => {
-      const updatedOwner = data?.updateOwner;
+      const updatedMedicine = data?.updateMedicine;
       const response = cache.readQuery<ListMedicinesGql>({ query: LIST_MEDICINES });
-      if (!response) return;
+      if (!response || !updatedMedicine) return;
       const index = response.listAllMedicines.findIndex((med) => med.id === medicine.id);
       cache.writeQuery({
         query: LIST_MEDICINES,
         data: {
-          listAllMedicines: response.listAllMedicines.toSpliced(index, 1, updatedOwner),
+          listAllMedicines: response.listAllMedicines.toSpliced(index, 1, updatedMedicine),
         },
       });
     },
