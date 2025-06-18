@@ -12,4 +12,4 @@ source venv_name/bin/activate ## Activación
 pip3 install wikipedia ## Instalación de librerias
 ```
 
-Adicionalmente, dado el caso de ser necesario, python debe soportar la libraria tkinter para los frames de las sopas de letras, es posible que se necesite instalar `python3-tk`, la instalación varia dependiendo del SO.
+Adicionalmente, dado el caso de ser necesario, python debe soportar la libreria `tkinter` para los frames de las sopas de letras, es posible que se necesite instalar `python3-tk`, la instalación varia dependiendo del SO.
